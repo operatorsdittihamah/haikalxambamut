@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Asisten Ambamut - Bahasa Inggris SMP Kelas 9</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (Cartoon/Playful) & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #fef9c3 0%, #e0f2fe 50%, #f3e8ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .font-cartoon {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* ================= ANIMASI MASKOT ASISTEN AMBAMUT ================= */
+        /* 1. Kondisi Idle (Santai mengangguk & berkedip) */
+        @keyframes ambamutIdle {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-6px) rotate(1.5deg) scale(1.02); }
+        }
+        .state-idle .ambamut-body {
+            animation: ambamutIdle 2.2s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+        @keyframes eyeBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        .state-idle .eye-pupil {
+            animation: eyeBlink 3.5s infinite;
+            transform-origin: center;
+        }
+
+        /* 2. Kondisi BENAR: Tertawa Terbahak & Menari-nari */
+        @keyframes ambamutDance {
+            0%   { transform: translateY(0px) rotate(-12deg) scale(1.05); }
+            25%  { transform: translateY(-28px) rotate(12deg) scale(1.12); }
+            50%  { transform: translateY(0px) rotate(-10deg) scale(1.05); }
+            75%  { transform: translateY(-25px) rotate(14deg) scale(1.12); }
+            100% { transform: translateY(0px) rotate(-12deg) scale(1.05); }
+        }
+        @keyframes armWaveLeft {
+            0%, 100% { transform: rotate(-45deg); }
+            50% { transform: rotate(-110deg); }
+        }
+        @keyframes armWaveRight {
+            0%, 100% { transform: rotate(45deg); }
+            50% { transform: rotate(110deg); }
+        }
+        @keyframes laughBounce {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.25); }
+        }
+        .state-dance .ambamut-body {
+            animation: ambamutDance 0.55s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+        .state-dance .arm-left {
+            animation: armWaveLeft 0.35s ease-in-out infinite;
+            transform-origin: 65px 115px;
+        }
+        .state-dance .arm-right {
+            animation: armWaveRight 0.35s ease-in-out infinite;
+            transform-origin: 135px 115px;
+        }
+        .state-dance .mouth-laugh {
+            animation: laughBounce 0.25s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        /* 3. Kondisi SALAH: Menangis Deras & Guling-guling di Lantai */
+        @keyframes ambamutRoll {
+            0%   { transform: translateX(-55px) translateY(22px) rotate(-360deg) scale(0.92); }
+            25%  { transform: translateX(-15px) translateY(18px) rotate(-180deg) scale(0.95); }
+            50%  { transform: translateX(55px) translateY(22px) rotate(0deg) scale(0.92); }
+            75%  { transform: translateX(15px) translateY(18px) rotate(180deg) scale(0.95); }
+            100% { transform: translateX(-55px) translateY(22px) rotate(360deg) scale(0.92); }
+        }
+        @keyframes tearSprayLeft {
+            0%   { transform: translate(0, 0) scale(0.6); opacity: 1; }
+            100% { transform: translate(-35px, 25px) scale(1.3); opacity: 0; }
+        }
+        @keyframes tearSprayRight {
+            0%   { transform: translate(0, 0) scale(0.6); opacity: 1; }
+            100% { transform: translate(35px, 25px) scale(1.3); opacity: 0; }
+        }
+        .state-cry .ambamut-body {
+            animation: ambamutRoll 1.35s linear infinite;
+            transform-origin: center center;
+        }
+        .state-cry .tear-left {
+            animation: tearSprayLeft 0.45s ease-out infinite;
+        }
+        .state-cry .tear-right {
+            animation: tearSprayRight 0.45s ease-out infinite;
+        }
+
+        /* Efek Teks Onomatope (HAHAHA / HUWAAA) */
+        @keyframes popFloat {
+            0% { opacity: 0; transform: scale(0.5) translateY(10px); }
+            20% { opacity: 1; transform: scale(1.1) translateY(0px); }
+            80% { opacity: 1; transform: scale(1) translateY(-8px); }
+            100% { opacity: 0; transform: scale(0.9) translateY(-15px); }
+        }
+        .sfx-badge {
+            animation: popFloat 1.8s ease-in-out infinite;
+        }
+
+        /* Animasi Muncul Kartu */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.01);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-amber-400 selection:text-slate-900">
+
+    <!-- ================= NAVBAR ATAS ================= -->
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b-2 border-amber-200/80 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-md shadow-amber-200 border-2 border-white">
+                    <i class="fa-solid fa-robot text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-cartoon font-bold text-slate-900 text-lg sm:text-xl tracking-wide block leading-none">
+                        Asisten Ambamut
+                    </span>
+                    <span class="text-xs font-semibold text-orange-600">Kuis Bahasa Inggris SMP Kelas 9</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <button id="sound-toggle" onclick="toggleSound()" class="p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-800 transition-colors cursor-pointer" title="Suara Efek Kartun">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+                <div class="hidden sm:flex items-center gap-2 bg-sky-100 border border-sky-200 px-3.5 py-1.5 rounded-xl text-sky-900 text-xs font-bold">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span>40 Soal • Skor Maks. 100</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- ================= LAYAR 1: HALAMAN MULAI (START SCREEN) ================= -->
+        <section id="start-screen" class="animate-slide-up max-w-2xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-6 sm:p-10 text-center relative overflow-hidden">
+                <!-- Ilustrasi Mini Ambamut di Halaman Awal -->
+                <div class="w-36 h-36 mx-auto mb-3 state-idle">
+                    <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                        <g class="ambamut-body">
+                            <!-- Antena -->
+                            <line x1="100" y1="32" x2="100" y2="14" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="100" cy="12" r="8" fill="#ef4444"/>
+                            <!-- Telinga -->
+                            <circle cx="42" cy="95" r="14" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+                            <circle cx="158" cy="95" r="14" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+                            <!-- Badan/Kepala Bulat Lucu -->
+                            <rect x="46" y="34" width="108" height="114" rx="48" fill="#fde047" stroke="#eab308" stroke-width="4"/>
+                            <!-- Jambul Rambut -->
+                            <path d="M82 34 Q95 14 105 32 Q115 16 122 35" fill="none" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/>
+                            <!-- Pipi Merona -->
+                            <ellipse cx="68" cy="105" rx="10" ry="6" fill="#fda4af" opacity="0.8"/>
+                            <ellipse cx="132" cy="105" rx="10" ry="6" fill="#fda4af" opacity="0.8"/>
+                            <!-- Mata -->
+                            <g class="eye-pupil">
+                                <circle cx="78" cy="86" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+                                <circle cx="80" cy="86" r="5" fill="#1e293b"/>
+                                <circle cx="82" cy="84" r="2" fill="#ffffff"/>
+                                <circle cx="122" cy="86" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+                                <circle cx="120" cy="86" r="5" fill="#1e293b"/>
+                                <circle cx="122" cy="84" r="2" fill="#ffffff"/>
+                            </g>
+                            <!-- Mulut Senyum -->
+                            <path d="M84 114 Q100 130 116 114" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
+                            <!-- Dasi Kupu-kupu -->
+                            <polygon points="100,148 84,140 84,156" fill="#3b82f6"/>
+                            <polygon points="100,148 116,140 116,156" fill="#3b82f6"/>
+                            <circle cx="100" cy="148" r="5" fill="#1d4ed8"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <span class="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-xs uppercase tracking-wider mb-2">
+                    Halo, Sobat SMP Kelas 9! 👋
+                </span>
+                <h1 class="font-cartoon text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
+                    Kuis Bahasa Inggris <br class="hidden sm:inline">Bareng Asisten Ambamut!
+                </h1>
+                <p class="text-slate-600 text-sm sm:text-base max-w-lg mx-auto mb-6 leading-relaxed">
+                    Jawab <strong>40 soal Bahasa Inggris Kelas 9</strong> dengan benar untuk meraih <strong>Skor 100</strong>! Kalau benar, Ambamut bakal <em>ketawa & joget</em>. Kalau salah, dia bakal <em>nangis guling-guling</em>!
+                </p>
+
+                <!-- Info Poin -->
+                <div class="grid grid-cols-3 gap-3 mb-7">
+                    <div class="bg-sky-50 border-2 border-sky-100 rounded-2xl p-3">
+                        <div class="font-cartoon text-2xl font-bold text-sky-600">40</div>
+                        <div class="text-xs font-bold text-slate-500">Jumlah Soal</div>
+                    </div>
+                    <div class="bg-emerald-50 border-2 border-emerald-100 rounded-2xl p-3">
+                        <div class="font-cartoon text-2xl font-bold text-emerald-600">+2.5</div>
+                        <div class="text-xs font-bold text-slate-500">Poin / Benar</div>
+                    </div>
+                    <div class="bg-amber-50 border-2 border-amber-100 rounded-2xl p-3">
+                        <div class="font-cartoon text-2xl font-bold text-amber-600">100</div>
+                        <div class="text-xs font-bold text-slate-500">Skor Maksimal</div>
+                    </div>
+                </div>
+
+                <!-- Form Input Nama -->
+                <form onsubmit="startGame(event)" class="space-y-4 text-left max-w-md mx-auto">
+                    <div>
+                        <label for="student-name" class="block text-sm font-bold text-slate-700 mb-1.5">
+                            Nama Lengkap Siswa <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="student-name" required placeholder="Ketik namamu di sini..."
+                            class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-amber-400 focus:bg-white transition-all text-sm font-semibold">
+                    </div>
+
+                    <div>
+                        <label for="student-class" class="block text-sm font-bold text-slate-700 mb-1.5">
+                            Kelas <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="student-class" required placeholder="Contoh: IX-A / 9B"
+                            class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-amber-400 focus:bg-white transition-all text-sm font-semibold">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full py-4 px-6 mt-2 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 hover:from-amber-500 hover:to-rose-600 text-white font-cartoon font-bold text-lg sm:text-xl rounded-2xl shadow-lg shadow-orange-200 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+                        <span>Mulai Main Sekarang!</span>
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= LAYAR 2: ARENA GAME KUIS & PANGGUNG AMBAMUT ================= -->
+        <section id="quiz-screen" class="hidden animate-slide-up">
+            <!-- Baris Status Atas -->
+            <div class="bg-white rounded-2xl shadow-sm border-2 border-amber-100 p-3.5 sm:p-4 mb-5 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-cartoon font-bold flex items-center justify-center text-base" id="avatar-initials">
+                        S9
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-900 text-sm" id="display-name">Nama Siswa</div>
+                        <div class="text-xs font-semibold text-slate-500" id="display-class">Kelas 9</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <!-- Timer -->
+                    <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700">
+                        <i class="fa-regular fa-clock text-orange-500"></i>
+                        <span id="timer-display" class="font-mono">00:00</span>
+                    </div>
+
+                    <!-- Skor Live -->
+                    <div class="flex items-center gap-1.5 bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold text-emerald-900">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        <span>Skor: <span id="live-score">0</span> / 100</span>
+                    </div>
+
+                    <!-- Tombol Buka Daftar Nomor Soal -->
+                    <button onclick="toggleDrawer()"
+                        class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors cursor-pointer">
+                        <i class="fa-solid fa-table-cells"></i>
+                        <span>Soal <span id="answered-count">0</span>/40</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Split: Panggung Asisten Ambamut (Kiri/Atas) & Kartu Soal (Kanan/Bawah) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                <!-- ===== KOLOM KIRI (4 Kolom): PANGGUNG ASISTEN AMBAMUT ===== -->
+                <div class="lg:col-span-4 bg-white rounded-3xl shadow-lg border-4 border-amber-200 p-5 flex flex-col items-center relative overflow-hidden">
+                    <!-- Latar Belakang Panggung -->
+                    <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-amber-100/90 to-transparent pointer-events-none"></div>
+                    <div class="w-full flex items-center justify-between mb-2 z-10">
+                        <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-cartoon font-bold text-xs">
+                            <i class="fa-solid fa-sparkles text-amber-500 mr-1"></i>Asisten Ambamut
+                        </span>
+                        <!-- Tombol Tes Ekspresi Kecil -->
+                        <div class="flex gap-1">
+                            <button onclick="previewReaction('dance')" title="Tes Ambamut Joget" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[11px] font-bold cursor-pointer">
+                                💃 Joget
+                            </button>
+                            <button onclick="previewReaction('cry')" title="Tes Ambamut Guling-guling" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 text-[11px] font-bold cursor-pointer">
+                                😭 Guling
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Balon Dialog (Speech Bubble) Ambamut -->
+                    <div id="speech-bubble" class="relative z-10 w-full bg-sky-50 border-2 border-sky-200 rounded-2xl p-3.5 mb-2 text-center shadow-sm transition-all">
+                        <p id="ambamut-dialogue" class="text-xs sm:text-sm font-bold text-slate-800 leading-snug">
+                            "Ayo pilih jawaban yang paling tepat! Ambamut siap joget kalau kamu benar! 😎"
+                        </p>
+                        <!-- Segitiga Ekor Balon Dialog -->
+                        <div class="w-3.5 h-3.5 bg-sky-50 border-r-2 border-b-2 border-sky-200 transform rotate-45 mx-auto -mb-5 mt-1.5"></div>
+                    </div>
+
+                    <!-- Arena Karakter SVG Ambamut -->
+                    <div id="ambamut-stage" class="state-idle relative w-full h-56 sm:h-64 flex items-center justify-center mt-2 select-none">
+                        <!-- Efek Teks Onomatope Saat Tertawa / Menangis -->
+                        <div id="sfx-text-laugh" class="hidden sfx-badge absolute top-2 right-2 bg-emerald-500 text-white font-cartoon font-bold text-xs sm:text-sm px-3 py-1 rounded-full shadow-md rotate-12 z-20">
+                            HAHAHA! YEAY! 🎉
+                        </div>
+                        <div id="sfx-text-cry" class="hidden sfx-badge absolute top-2 left-2 bg-rose-500 text-white font-cartoon font-bold text-xs sm:text-sm px-3 py-1 rounded-full shadow-md -rotate-12 z-20">
+                            HUWAAA! 😭💦
+                        </div>
+
+                        <!-- Garis Lantai Panggung -->
+                        <div class="absolute bottom-4 inset-x-6 h-2 bg-amber-300/60 rounded-full"></div>
+
+                        <!-- SVG MASKOT ASISTEN AMBAMUT -->
+                        <svg viewBox="0 0 200 200" class="w-48 h-48 sm:w-52 sm:h-52 overflow-visible z-10">
+                            <g class="ambamut-body">
+                                <!-- Kaki Kiri & Kanan -->
+                                <rect x="74" y="146" width="16" height="24" rx="8" fill="#ea580c"/>
+                                <rect x="110" y="146" width="16" height="24" rx="8" fill="#ea580c"/>
+                                <!-- Sepatu -->
+                                <ellipse cx="80" cy="170" rx="13" ry="7" fill="#1e293b"/>
+                                <ellipse cx="120" cy="170" rx="13" ry="7" fill="#1e293b"/>
+
+                                <!-- Tangan Kiri & Kanan (Animasi melambai saat menari) -->
+                                <g class="arm-left">
+                                    <rect x="24" y="102" width="28" height="14" rx="7" fill="#fbbf24" stroke="#d97706" stroke-width="2.5"/>
+                                    <circle cx="24" cy="109" r="8" fill="#fde047" stroke="#d97706" stroke-width="2.5"/>
+                                </g>
+                                <g class="arm-right">
+                                    <rect x="148" y="102" width="28" height="14" rx="7" fill="#fbbf24" stroke="#d97706" stroke-width="2.5"/>
+                                    <circle cx="176" cy="109" r="8" fill="#fde047" stroke="#d97706" stroke-width="2.5"/>
+                                </g>
+
+                                <!-- Antena Kepala -->
+                                <line x1="100" y1="34" x2="100" y2="14" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+                                <circle cx="100" cy="12" r="8" fill="#ef4444"/>
+
+                                <!-- Telinga -->
+                                <circle cx="44" cy="92" r="14" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+                                <circle cx="156" cy="92" r="14" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+
+                                <!-- Badan Utama Ambamut -->
+                                <rect x="46" y="34" width="108" height="116" rx="48" fill="#fde047" stroke="#eab308" stroke-width="4"/>
+
+                                <!-- Jambul Lucu -->
+                                <path d="M82 34 Q95 14 105 32 Q115 16 122 35" fill="none" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/>
+
+                                <!-- Pipi Merona -->
+                                <ellipse cx="66" cy="102" rx="10" ry="6" fill="#fda4af" opacity="0.85"/>
+                                <ellipse cx="134" cy="102" rx="10" ry="6" fill="#fda4af" opacity="0.85"/>
+
+                                <!-- EKSPRESI MATA 1: IDLE (Normal) -->
+                                <g id="eyes-idle" class="eye-pupil">
+                                    <circle cx="78" cy="84" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+                                    <circle cx="80" cy="84" r="5" fill="#1e293b"/>
+                                    <circle cx="82" cy="82" r="2" fill="#ffffff"/>
+                                    <circle cx="122" cy="84" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+                                    <circle cx="120" cy="84" r="5" fill="#1e293b"/>
+                                    <circle cx="122" cy="82" r="2" fill="#ffffff"/>
+                                </g>
+
+                                <!-- EKSPRESI MATA 2: TERTAWA BAHAGIA (^ ^) -->
+                                <g id="eyes-laugh" class="hidden">
+                                    <path d="M66 88 Q78 72 90 88" fill="none" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round"/>
+                                    <path d="M110 88 Q122 72 134 88" fill="none" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round"/>
+                                </g>
+
+                                <!-- EKSPRESI MATA 3: MENANGIS DERAS (> < + Air Mata) -->
+                                <g id="eyes-cry" class="hidden">
+                                    <path d="M68 78 L86 86 L68 94" fill="none" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M132 78 L114 86 L132 94" fill="none" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <!-- Air Mata Menyembur -->
+                                    <path class="tear-left" d="M65 92 Q45 95 42 115 Q55 112 65 92" fill="#38bdf8"/>
+                                    <path class="tear-right" d="M135 92 Q155 95 158 115 Q145 112 135 92" fill="#38bdf8"/>
+                                </g>
+
+                                <!-- EKSPRESI MULUT 1: IDLE (Senyum Ramah) -->
+                                <path id="mouth-idle" d="M84 112 Q100 126 116 112" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
+
+                                <!-- EKSPRESI MULUT 2: TERTAWA TERBAHAK-BAHAK -->
+                                <g id="mouth-laugh" class="hidden mouth-laugh">
+                                    <path d="M78 108 Q100 108 122 108 Q122 136 100 136 Q78 136 78 108 Z" fill="#be123c" stroke="#1e293b" stroke-width="3.5"/>
+                                    <path d="M88 128 Q100 120 112 128 Q106 135 100 135 Q94 135 88 128 Z" fill="#fb7185"/>
+                                </g>
+
+                                <!-- EKSPRESI MULUT 3: MENANGIS MEWEK -->
+                                <g id="mouth-cry" class="hidden">
+                                    <path d="M80 128 Q100 104 120 128 Q110 134 100 128 Q90 134 80 128 Z" fill="#9f1239" stroke="#1e293b" stroke-width="3.5"/>
+                                </g>
+
+                                <!-- Dasi Kupu-kupu Khas Asisten -->
+                                <polygon points="100,148 84,140 84,156" fill="#2563eb"/>
+                                <polygon points="100,148 116,140 116,156" fill="#2563eb"/>
+                                <circle cx="100" cy="148" r="5" fill="#1e40af"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Progress Bar Mini di Bawah Panggung -->
+                    <div class="w-full mt-2 z-10">
+                        <div class="flex justify-between text-[11px] font-bold text-slate-500 mb-1">
+                            <span>Progres Kuis</span>
+                            <span id="progress-percent-text">2.5%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                            <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-orange-500 h-2.5 rounded-full transition-all duration-300" style="width: 2.5%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== KOLOM KANAN (8 Kolom): KARTU SOAL BAHASA INGGRIS KELAS 9 ===== -->
+                <div class="lg:col-span-8 bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-6 sm:p-8">
+                    <!-- Header Soal -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3.5 py-1 rounded-xl bg-amber-400 text-slate-900 font-cartoon font-bold text-sm shadow-xs">
+                                Soal <span id="current-q-num">1</span> / 40
+                            </span>
+                            <span id="question-topic" class="px-3 py-1 rounded-xl bg-sky-100 text-sky-800 font-bold text-xs">
+                                Narrative Text
+                            </span>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                            +2.5 Poin
+                        </span>
+                    </div>
+
+                    <!-- Kotak Bacaan (Jika Soal Memiliki Teks / Label / Resep) -->
+                    <div id="passage-box" class="hidden mb-5 p-4 sm:p-5 bg-amber-50/70 border-l-4 border-amber-400 rounded-r-2xl text-slate-800 text-sm leading-relaxed">
+                        <div class="text-xs font-extrabold uppercase tracking-wider text-amber-700 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span id="passage-title">Read the text carefully!</span>
+                        </div>
+                        <div id="passage-content" class="whitespace-pre-line font-medium"></div>
+                    </div>
+
+                    <!-- Teks Pertanyaan -->
+                    <h2 id="question-text" class="text-base sm:text-lg font-extrabold text-slate-900 leading-relaxed mb-6">
+                        Memuat soal...
+                    </h2>
+
+                    <!-- Pilihan Ganda (A, B, C, D) -->
+                    <div id="options-container" class="space-y-3">
+                        <!-- Di-render otomatis via JS -->
+                    </div>
+
+                    <!-- Kotak Pembahasan Singkat (Muncul setelah menjawab) -->
+                    <div id="explanation-box" class="hidden mt-6 p-4 rounded-2xl border-2 text-sm animate-slide-up">
+                        <div class="flex items-start gap-3">
+                            <div id="exp-icon" class="text-xl mt-0.5"></div>
+                            <div>
+                                <div id="exp-title" class="font-extrabold mb-1"></div>
+                                <p id="exp-text" class="text-slate-700 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Navigasi Bawah -->
+                    <div class="flex items-center justify-between pt-6 mt-6 border-t-2 border-slate-100 gap-3">
+                        <button id="prev-btn" onclick="prevQuestion()"
+                            class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none text-slate-700 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Sebelumnya</span>
+                        </button>
+
+                        <button id="next-btn" onclick="nextQuestion()"
+                            class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm transition-colors flex items-center gap-2 shadow-md shadow-sky-100 cursor-pointer">
+                            <span>Soal Berikutnya</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <button id="finish-btn" onclick="openConfirmModal()"
+                            class="hidden px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-cartoon font-bold text-sm sm:text-base transition-colors flex items-center gap-2 shadow-md shadow-emerald-200 cursor-pointer">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                            <span>Selesai & Lihat Nilai!</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= LAYAR 3: HASIL AKHIR & RAPOR AMBAMUT ================= -->
+        <section id="result-screen" class="hidden animate-slide-up space-y-8">
+            <div class="bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-6 sm:p-10 text-center relative overflow-hidden">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs uppercase tracking-wider mb-3">
+                    Laporan Hasil Belajar SMP Kelas 9
+                </span>
+                <h2 class="font-cartoon text-2xl sm:text-3xl font-bold text-slate-900 mb-1" id="result-name">Nama Siswa</h2>
+                <p class="text-sm font-semibold text-slate-500 mb-6" id="result-meta">Kelas 9 • Waktu: 00:00</p>
+
+                <!-- Lingkaran Skor Akhir -->
+                <div class="relative inline-flex items-center justify-center w-40 h-40 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-rose-500 p-2 shadow-xl shadow-orange-200 mb-6">
+                    <div class="w-full h-full bg-white rounded-full flex flex-col items-center justify-center">
+                        <span class="text-xs font-extrabold text-slate-400 uppercase">Skor Akhir</span>
+                        <span id="final-score" class="font-cartoon text-5xl font-bold text-slate-900 my-1">100</span>
+                        <span class="text-xs font-bold text-orange-600">Maksimal 100</span>
+                    </div>
+                </div>
+
+                <!-- Komentar Penutup Asisten Ambamut -->
+                <div class="max-w-lg mx-auto bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 mb-7">
+                    <div id="final-predicate" class="font-cartoon text-lg sm:text-xl font-bold text-sky-900 mb-1">
+                        Predikat: A+ (Sempurna!)
+                    </div>
+                    <p id="final-ambamut-quote" class="text-sm text-slate-700 font-medium">
+                        "Ambamut joget nonstop sampai pagi! Kamu menjawab semua 40 soal dengan benar!"
+                    </p>
+                </div>
+
+                <!-- Ringkasan Statistik -->
+                <div class="grid grid-cols-3 gap-3 sm:gap-4 max-w-xl mx-auto mb-8">
+                    <div class="bg-emerald-50 border-2 border-emerald-100 rounded-2xl p-3.5">
+                        <div id="res-correct" class="font-cartoon text-2xl sm:text-3xl font-bold text-emerald-600">40</div>
+                        <div class="text-xs font-bold text-emerald-800">Benar</div>
+                    </div>
+                    <div class="bg-rose-50 border-2 border-rose-100 rounded-2xl p-3.5">
+                        <div id="res-wrong" class="font-cartoon text-2xl sm:text-3xl font-bold text-rose-600">0</div>
+                        <div class="text-xs font-bold text-rose-800">Salah</div>
+                    </div>
+                    <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5">
+                        <div id="res-empty" class="font-cartoon text-2xl sm:text-3xl font-bold text-slate-600">0</div>
+                        <div class="text-xs font-bold text-slate-700">Kosong</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button onclick="restartQuiz()"
+                        class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-cartoon font-bold text-base shadow-lg shadow-orange-200 transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Main Lagi Bareng Ambamut</span>
+                    </button>
+                    <a href="#review-container"
+                        class="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm sm:text-base transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Lihat Pembahasan 40 Soal</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Daftar Pembahasan Lengkap -->
+            <div id="review-container" class="bg-white rounded-3xl shadow-md border-2 border-slate-100 p-6 sm:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b-2 border-slate-100">
+                    <h3 class="font-cartoon text-xl font-bold text-slate-900">Pembahasan Lengkap (40 Soal)</h3>
+                    <div class="flex gap-2">
+                        <button onclick="renderReview('all')" id="rev-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-slate-900 cursor-pointer">Semua</button>
+                        <button onclick="renderReview('wrong')" id="rev-wrong" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 cursor-pointer">Salah / Kosong</button>
+                        <button onclick="renderReview('correct')" id="rev-correct" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 cursor-pointer">Benar</button>
+                    </div>
+                </div>
+                <div id="review-list" class="space-y-5"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= DRAWER / MODAL NAVIGASI NOMOR SOAL (1 - 40) ================= -->
+    <div id="nav-drawer" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-amber-200 animate-slide-up">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                <h3 class="font-cartoon text-lg font-bold text-slate-900">Pilih Nomor Soal (1 - 40)</h3>
+                <button onclick="toggleDrawer()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="question-grid" class="grid grid-cols-5 sm:grid-cols-8 gap-2 max-h-72 overflow-y-auto p-1">
+                <!-- Tombol 1-40 -->
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600">
+                <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> Benar</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-rose-500 inline-block"></span> Salah</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-200 inline-block"></span> Belum</span>
+                </div>
+                <button onclick="toggleDrawer(); openConfirmModal();" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold cursor-pointer">
+                    Kumpulkan Kuis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL KONFIRMASI SELESAI ================= -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border-4 border-amber-200 animate-slide-up">
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mx-auto mb-3">
+                <i class="fa-solid fa-flag-checkered"></i>
+            </div>
+            <h3 class="font-cartoon text-xl font-bold text-slate-900 mb-2">Kumpulkan Semua Jawaban?</h3>
+            <p id="confirm-text" class="text-sm text-slate-600 mb-6 leading-relaxed">
+                Pastikan kamu sudah memeriksa jawabanmu sebelum melihat skor akhir!
+            </p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closeConfirmModal()" class="py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm cursor-pointer">
+                    Cek Lagi
+                </button>
+                <button onclick="finishQuiz()" class="py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-md cursor-pointer">
+                    Ya, Selesai!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPT BANK SOAL KELAS 9 SMP & LOGIKA GAME AMBAMUT ================= -->
+    <script>
+        // =========================================================================
+        // 1. BANK SOAL BAHASA INGGRIS SMP KELAS 9 (40 SOAL LENGKAP)
+        // Materi: Hope/Wish/Congratulation, Agreement/Disagreement, Conjunctions of
+        // Purpose (in order to/so that), Labels, Procedure Text, Continuous Tenses,
+        // Present Perfect, Narrative Text, Passive Voice, Report Text.
+        // =========================================================================
+        const quizQuestions = [
+            // --- BAB 1: EXPRESSIONS OF HOPE, WISH, & CONGRATULATION ---
+            {
+                id: 1,
+                topic: "Hope & Congratulation",
+                question: "Rani: 'I won the first prize in the National English Storytelling Contest yesterday!'\nBudi: '______ I am so proud of you!'",
+                options: [
+                    "I hope you will lose next time.",
+                    "Congratulations on your achievement!",
+                    "I'm sorry to hear that.",
+                    "I disagree with your opinion."
+                ],
+                answer: 1,
+                explanation: "Ungkapan selamat yang tepat ketika teman memenangkan perlombaan adalah 'Congratulations on your achievement!'."
+            },
+            {
+                id: 2,
+                topic: "Expression of Hope",
+                question: "Sinta is going to take her final English examination tomorrow. What should you say to her?",
+                options: [
+                    "I hope you pass the exam with flying colors!",
+                    "Congratulations on passing the exam!",
+                    "I wish I hadn't studied last night.",
+                    "Thanks for helping me with the exam."
+                ],
+                answer: 0,
+                explanation: "Karena ujian baru akan dilaksanakan besok, ungkapan harapan yang tepat menggunakan 'I hope + Subject + Simple Present/Future'."
+            },
+            {
+                id: 3,
+                topic: "Expression of Wish",
+                question: "Deni: 'I have a terrible toothache today.'\nEdo: 'Oh, I'm sorry to hear that. I ______ you get well soon.'",
+                options: [
+                    "congratulate",
+                    "hope",
+                    "agree",
+                    "refuse"
+                ],
+                answer: 1,
+                explanation: "'I hope you get well soon' adalah ekspresi standar untuk mendoakan teman yang sedang sakit agar cepat sembuh."
+            },
+
+            // --- BAB 2: AGREEMENT & DISAGREEMENT + CONJUNCTIONS OF PURPOSE ---
+            {
+                id: 4,
+                topic: "Agreement & Disagreement",
+                question: "Lina: 'I think we should bring our own tumblers to school to reduce plastic waste.'\nUdin: '______ That will help keep our school environment clean.'",
+                options: [
+                    "I don't think so.",
+                    "I totally agree with you.",
+                    "That's a terrible idea.",
+                    "I'm afraid I disagree."
+                ],
+                answer: 1,
+                explanation: "Kalimat lanjutan Udin ('That will help keep our school environment clean') menunjukkan bahwa ia setuju dengan ide Lina."
+            },
+            {
+                id: 5,
+                topic: "Conjunction of Purpose (in order to)",
+                question: "We must eat nutritious food and exercise regularly ______ stay healthy and strong.",
+                options: [
+                    "so that",
+                    "in order to",
+                    "because",
+                    "although"
+                ],
+                answer: 1,
+                explanation: "'In order to' diikuti langsung oleh kata kerja dasar (Verb 1: 'stay') untuk menyatakan tujuan."
+            },
+            {
+                id: 6,
+                topic: "Conjunction of Purpose (so that)",
+                question: "Riko studies hard every night ______ he can get accepted into his favorite senior high school.",
+                options: [
+                    "in order to",
+                    "to",
+                    "so that",
+                    "for"
+                ],
+                answer: 2,
+                explanation: "'So that' diikuti oleh klausa lengkap (Subject + Modal/Verb: 'he can get accepted...')."
+            },
+            {
+                id: 7,
+                topic: "Conjunction of Purpose",
+                question: "My mother always boils the water before drinking it ______ kill harmful bacteria.",
+                options: [
+                    "so that",
+                    "in order not to",
+                    "in order to",
+                    "because of"
+                ],
+                answer: 2,
+                explanation: "Diikuti oleh Verb 1 ('kill'), maka penghubung tujuan yang tepat adalah 'in order to' (agar/untuk)."
+            },
+
+            // --- BAB 3: LABELS (FOOD, DRINK, & MEDICINE) ---
+            {
+                id: 8,
+                topic: "Medicine Label",
+                passageTitle: "Read the Cough Syrup Label carefully",
+                passage: "HERBAL COUGH SYRUP\nRelieves coughs and soothes sore throats.\nDosage:\n- Adults & children 12 years and over: 2 teaspoons every 4 hours.\n- Children 6 to under 12 years: 1 teaspoon every 4 hours.\n- Children under 6 years: Consult a doctor.\nKeep out of reach of children. Store in a cool, dry place.",
+                question: "How much syrup should a 14-year-old student take?",
+                options: [
+                    "1 teaspoon every 4 hours",
+                    "2 teaspoons every 4 hours",
+                    "2 tablespoons every 6 hours",
+                    "Consult a doctor first"
+                ],
+                answer: 1,
+                explanation: "Siswa kelas 9 berusia sekitar 14 tahun masuk kategori 'Adults & children 12 years and over', sehingga dosisnya adalah '2 teaspoons every 4 hours'."
+            },
+            {
+                id: 9,
+                topic: "Medicine Label",
+                passageTitle: "Refer to the Cough Syrup Label",
+                passage: "Keep out of reach of children. Store in a cool, dry place.",
+                question: "What does the instruction 'Store in a cool, dry place' mean?",
+                options: [
+                    "Put the medicine inside the freezer.",
+                    "Keep the medicine away from direct sunlight and moisture.",
+                    "Drink the medicine with cold water.",
+                    "Throw the bottle away after opening."
+                ],
+                answer: 1,
+                explanation: "'Store in a cool, dry place' berarti simpan obat di tempat yang sejuk dan kering (terhindar dari panas matahari langsung dan tempat lembap)."
+            },
+            {
+                id: 10,
+                topic: "Food Label",
+                passageTitle: "Nutrition Facts - Choco Oat Biscuits",
+                passage: "Serving Size: 3 biscuits (30g)\nCalories: 140 kcal\nTotal Fat: 5g | Sugar: 8g | Protein: 3g | Fiber: 4g\nBest Before: 18 NOV 2027",
+                question: "If Farhan eats 6 biscuits, how many calories does he consume?",
+                options: [
+                    "140 kcal",
+                    "210 kcal",
+                    "280 kcal",
+                    "420 kcal"
+                ],
+                answer: 2,
+                explanation: "1 takaran saji (3 biskuit) mengandung 140 kkal. Jika Farhan makan 6 biskuit (2 takaran saji), maka kalorinya adalah 2 x 140 = 280 kkal."
+            },
+
+            // --- BAB 4: PROCEDURE TEXT (RECIPE & MANUAL) ---
+            {
+                id: 11,
+                topic: "Procedure Text (Recipe)",
+                passageTitle: "How to Make Iced Lemon Tea",
+                passage: "Ingredients:\n- 1 tea bag\n- 200 ml hot water\n- 2 tablespoons of sugar\n- Half a fresh lemon\n- Ice cubes\n\nSteps:\n1. Steep the tea bag in hot water for 3 minutes, then remove the bag.\n2. Add sugar and stir well until dissolved.\n3. Squeeze the fresh lemon juice into the tea.\n4. Add ice cubes and serve immediately.",
+                question: "What should we do right after stirring the sugar until it dissolves?",
+                options: [
+                    "Boil the water again.",
+                    "Remove the tea bag.",
+                    "Squeeze the fresh lemon juice into the tea.",
+                    "Put the ice cubes into the hot water first."
+                ],
+                answer: 2,
+                explanation: "Pada langkah ke-2 setelah gula larut ('stir well until dissolved'), langkah ke-3 adalah 'Squeeze the fresh lemon juice into the tea'."
+            },
+            {
+                id: 12,
+                topic: "Procedure Text (Vocabulary)",
+                question: "The word 'Steep' in Step 1 ('Steep the tea bag in hot water...') is closest in meaning to ______.",
+                options: [
+                    "Soak",
+                    "Fry",
+                    "Chop",
+                    "Peel"
+                ],
+                answer: 0,
+                explanation: "'Steep' dalam pembuatan teh berarti merendam/menyeduh kantong teh dalam air panas, bersinonim dengan 'Soak'."
+            },
+            {
+                id: 13,
+                topic: "Procedure Text (Manual)",
+                question: "Which sentence is commonly found in a Procedure Text manual?",
+                options: [
+                    "Once upon a time, there lived a wise king.",
+                    "Press the power button for three seconds to turn on the device.",
+                    "Komodo dragons are the largest living lizards on Earth.",
+                    "I have visited Bali three times with my family."
+                ],
+                answer: 1,
+                explanation: "Procedure text menggunakan kalimat perintah (Imperative Sentence) yang diawali Verb 1 seperti 'Press the power button...'."
+            },
+
+            // --- BAB 5: CONTINUOUS TENSES (PRESENT, PAST, FUTURE CONTINUOUS) ---
+            {
+                id: 14,
+                topic: "Present Continuous Tense",
+                question: "Look! The students of Class 9A ______ traditional dances in the school hall right now.",
+                options: [
+                    "practice",
+                    "practiced",
+                    "are practicing",
+                    "were practicing"
+                ],
+                answer: 2,
+                explanation: "Keterangan waktu 'Look!' dan 'right now' menandakan kejadian sedang berlangsung sekarang (Present Continuous: are + V-ing)."
+            },
+            {
+                id: 15,
+                topic: "Past Continuous Tense",
+                question: "While my mother ______ dinner in the kitchen last night, the electricity suddenly went out.",
+                options: [
+                    "is cooking",
+                    "was cooking",
+                    "cooks",
+                    "has cooked"
+                ],
+                answer: 1,
+                explanation: "Kejadian yang sedang berlangsung di masa lampau ketika kejadian lain menyela menggunakan Past Continuous (was/were + V-ing)."
+            },
+            {
+                id: 16,
+                topic: "Past Continuous Tense",
+                question: "What ______ you doing at 8 o'clock yesterday evening when I called you?",
+                options: [
+                    "are",
+                    "was",
+                    "were",
+                    "did"
+                ],
+                answer: 2,
+                explanation: "Subjek 'you' pada waktu spesifik di masa lampau ('at 8 o'clock yesterday evening') menggunakan to be 'were'."
+            },
+            {
+                id: 17,
+                topic: "Future Continuous Tense",
+                question: "Don't call me at 10 a.m. tomorrow because I ______ my English presentation in front of the class.",
+                options: [
+                    "will be delivering",
+                    "delivered",
+                    "was delivering",
+                    "have delivered"
+                ],
+                answer: 0,
+                explanation: "Aktivitas yang akan sedang berlangsung pada waktu tertentu di masa depan ('at 10 a.m. tomorrow') menggunakan Future Continuous: will be + V-ing."
+            },
+
+            // --- BAB 6: PRESENT PERFECT TENSE (HAVE/HAS + V3, FOR & SINCE) ---
+            {
+                id: 18,
+                topic: "Present Perfect Tense",
+                question: "Bagas and his family ______ in Bandung since 2018.",
+                options: [
+                    "live",
+                    "lived",
+                    "have lived",
+                    "are living"
+                ],
+                answer: 2,
+                explanation: "Kejadian yang dimulai di masa lampau ('since 2018') dan masih berlanjut hingga sekarang menggunakan Present Perfect: have/has + V3."
+            },
+            {
+                id: 19,
+                topic: "Present Perfect (For vs Since)",
+                question: "Mrs. Ratna has taught English at this junior high school ______ fifteen years.",
+                options: [
+                    "since",
+                    "for",
+                    "already",
+                    "yet"
+                ],
+                answer: 1,
+                explanation: "'For' digunakan untuk menyatakan durasi/lamanya waktu ('fifteen years'), sedangkan 'since' untuk titik awal waktu."
+            },
+            {
+                id: 20,
+                topic: "Present Perfect Tense",
+                question: "Have you ______ your science project yet? The deadline is this afternoon.",
+                options: [
+                    "finish",
+                    "finishing",
+                    "finished",
+                    "to finish"
+                ],
+                answer: 2,
+                explanation: "Setelah 'Have + Subject', kata kerja yang digunakan dalam Present Perfect adalah Past Participle (Verb 3: 'finished')."
+            },
+
+            // --- BAB 7: NARRATIVE TEXT (FOLKTALES & FAIRY TALES) ---
+            {
+                id: 21,
+                topic: "Narrative Text (Malin Kundang)",
+                passageTitle: "Read the Folktale Excerpt",
+                passage: "Many years ago, in a small coastal village in West Sumatra, lived a poor widow and her only son, Malin Kundang. Malin was a diligent and strong young man. One day, he decided to sail across the sea to seek a better fortune.\n\nYears later, Malin became a wealthy merchant and married a beautiful noblewoman. When his grand ship anchored near his home village, his elderly mother ran to hug him. Ashamed of her ragged clothes in front of his wife, Malin pushed her away and denied knowing her. Heartbroken, the mother prayed to God, and a fierce storm soon turned Malin and his ship into stone.",
+                question: "Why did Malin Kundang refuse to acknowledge his own mother?",
+                options: [
+                    "He did not recognize her face after many years.",
+                    "He was ashamed of her poor and ragged appearance in front of his wife.",
+                    "His mother did not bring any gifts for his wife.",
+                    "He wanted to sail away immediately before the storm."
+                ],
+                answer: 1,
+                explanation: "Di paragraf kedua tertulis: 'Ashamed of her ragged clothes in front of his wife, Malin pushed her away and denied knowing her.'"
+            },
+            {
+                id: 22,
+                topic: "Narrative Text (Moral Value)",
+                question: "What moral lesson can we learn from the story of Malin Kundang?",
+                options: [
+                    "We must become rich merchants before getting married.",
+                    "Never forget and disrespect our parents regardless of how successful we become.",
+                    "Sailing across the ocean is too dangerous for young men.",
+                    "Wealth is the most important thing in life."
+                ],
+                answer: 1,
+                explanation: "Pesan moral utama cerita Malin Kundang adalah kita tidak boleh durhaka atau melupakan orang tua meskipun sudah sukses dan kaya raya."
+            },
+            {
+                id: 23,
+                topic: "Narrative Text (Generic Structure)",
+                question: "Which part of a Narrative Text introduces the characters, time, and place of the story?",
+                options: [
+                    "Complication",
+                    "Resolution",
+                    "Orientation",
+                    "Re-orientation"
+                ],
+                answer: 2,
+                explanation: "'Orientation' adalah bagian pembuka cerita naratif yang memperkenalkan tokoh (who), waktu (when), dan tempat (where)."
+            },
+            {
+                id: 24,
+                topic: "Narrative Text (The Fox and the Grapes)",
+                passageTitle: "Read the Fable",
+                passage: "One hot summer day, a hungry fox spotted a bunch of juicy purple grapes hanging from a high vine. He jumped as high as he could, again and again, but he could not reach them. Finally, exhausted and frustrated, the fox walked away with his nose in the air, muttering, 'Those grapes are probably sour anyway!'",
+                question: "What does the fox's final statement show about his attitude?",
+                options: [
+                    "He actually tasted the grapes and found them sour.",
+                    "He pretended not to want the grapes because he failed to get them.",
+                    "He wanted to share the grapes with other animals.",
+                    "He planned to climb the tree the next morning."
+                ],
+                answer: 1,
+                explanation: "Rubah berpura-pura membenci anggur ('probably sour anyway') hanya untuk menutupi rasa malunya karena gagal meraihnya."
+            },
+
+            // --- BAB 8: PASSIVE VOICE (SIMPLE PRESENT & SIMPLE PAST) ---
+            {
+                id: 25,
+                topic: "Passive Voice (Simple Present)",
+                question: "Traditional Batik ______ in many regions of Java, such as Pekalongan, Solo, and Yogyakarta.",
+                options: [
+                    "is produced",
+                    "are produced",
+                    "produces",
+                    "was producing"
+                ],
+                answer: 0,
+                explanation: "'Traditional Batik' adalah subjek tunggal (uncountable/singular) dalam fakta masa kini (Simple Present Passive): is + V3 ('is produced')."
+            },
+            {
+                id: 26,
+                topic: "Passive Voice (Simple Past)",
+                question: "Borobudur Temple ______ by the Syailendra Dynasty in the 8th and 9th centuries.",
+                options: [
+                    "is built",
+                    "was built",
+                    "were built",
+                    "has built"
+                ],
+                answer: 1,
+                explanation: "Kejadian di masa lampau ('in the 8th and 9th centuries') dengan subjek tunggal ('Borobudur Temple') menggunakan Simple Past Passive: was + V3."
+            },
+            {
+                id: 27,
+                topic: "Passive Voice (Active to Passive)",
+                question: "Active: 'Chef Juna prepares delicious dishes every day.'\nPassive: 'Delicious dishes ______ by Chef Juna every day.'",
+                options: [
+                    "is prepared",
+                    "are prepared",
+                    "were prepared",
+                    "are preparing"
+                ],
+                answer: 1,
+                explanation: "Objek jamak ('Delicious dishes') menjadi subjek di kalimat pasif Simple Present, sehingga menggunakan 'are + V3' ('are prepared')."
+            },
+            {
+                id: 28,
+                topic: "Passive Voice (Simple Past Plural)",
+                question: "Several ancient manuscripts ______ in the old library last week.",
+                options: [
+                    "was discovered",
+                    "were discovered",
+                    "are discovered",
+                    "discovered"
+                ],
+                answer: 1,
+                explanation: "Subjek jamak ('Several ancient manuscripts') dengan keterangan waktu lampau ('last week') menggunakan 'were + V3' ('were discovered')."
+            },
+
+            // --- BAB 9: REPORT TEXT (ANIMALS, PLANTS, NATURAL PHENOMENA) ---
+            {
+                id: 29,
+                topic: "Report Text (Komodo Dragon)",
+                passageTitle: "Read the Report Text carefully",
+                passage: "The Komodo dragon (Varanus komodoensis) is the largest living species of lizard in the world. Native to several Indonesian islands, including Komodo, Rinca, and Flores, these reptiles can grow up to 3 meters in length and weigh around 70 kilograms.\n\nKomodo dragons are carnivores. They have keen eyesight and an exceptional sense of smell, which allows them to detect carrion from up to 4 kilometers away. Their saliva contains venomous proteins that prevent blood from clotting, helping them subdue large prey such as deer and wild boar.",
+                question: "What is the main purpose of the text above?",
+                options: [
+                    "To entertain readers with a story about a magical dragon",
+                    "To describe Komodo dragons in general based on scientific facts",
+                    "To explain how to keep a Komodo dragon as a pet",
+                    "To persuade tourists to hunt animals on Komodo Island"
+                ],
+                answer: 1,
+                explanation: "Tujuan utama Report Text adalah mendeskripsikan suatu objek/hewan secara umum dan faktual berdasarkan hasil observasi ilmiah."
+            },
+            {
+                id: 30,
+                topic: "Report Text (Detail)",
+                question: "How do Komodo dragons detect dead animals (carrion) from kilometers away?",
+                options: [
+                    "By using their loud roar",
+                    "By using their exceptional sense of smell",
+                    "By climbing tall trees on the island",
+                    "By swimming across the ocean"
+                ],
+                answer: 1,
+                explanation: "Teks menyebutkan: '...and an exceptional sense of smell, which allows them to detect carrion from up to 4 kilometers away.'"
+            },
+            {
+                id: 31,
+                topic: "Report Text (Vocabulary)",
+                question: "The word 'prey' in the last sentence ('...helping them subdue large prey...') means ______.",
+                options: [
+                    "an animal that is hunted and killed by another for food",
+                    "a place where reptiles sleep during the winter",
+                    "a type of poisonous plant found in forests",
+                    "a baby lizard that has just hatched"
+                ],
+                answer: 0,
+                explanation: "'Prey' berarti hewan mangsa (hewan yang diburu oleh predator sebagai makanan)."
+            },
+            {
+                id: 32,
+                topic: "Report Text (Aurora)",
+                passageTitle: "Read the Report Text about Aurora",
+                passage: "An aurora is a natural light display in Earth's sky, predominantly seen in high-latitude regions around the Arctic and Antarctic. Auroras occur when charged particles from the sun collide with gases in Earth's upper atmosphere.\n\nThese collisions emit tiny flashes of light that fill the sky with colorful curtains of green, pink, red, and violet. In the northern hemisphere, this phenomenon is known as the Aurora Borealis, while in the southern hemisphere, it is called the Aurora Australis.",
+                question: "What causes the colorful lights of an aurora to appear in the sky?",
+                options: [
+                    "Reflection of city lights on polar icebergs",
+                    "Collisions between solar charged particles and gases in Earth's atmosphere",
+                    "Lightning storms occurring in tropical oceans",
+                    "Sunlight passing through raindrops after a storm"
+                ],
+                answer: 1,
+                explanation: "Paragraf pertama menjelaskan bahwa aurora terjadi ketika partikel bermuatan dari matahari bertabrakan dengan gas di atmosfer atas Bumi."
+            },
+
+            // --- BAB 10: DEGREE OF COMPARISON, PRONOUNS, & GENERAL GRAMMAR SMP 9 ---
+            {
+                id: 33,
+                topic: "Degree of Comparison (Superlative)",
+                question: "Mount Everest is ______ mountain in the world, reaching 8,848 meters above sea level.",
+                options: [
+                    "high",
+                    "higher",
+                    "the highest",
+                    "more high"
+                ],
+                answer: 2,
+                explanation: "Bentuk Superlative (paling tinggi di dunia) untuk kata sifat satu suku kata menggunakan 'the + adjective-est' ('the highest')."
+            },
+            {
+                id: 34,
+                topic: "Degree of Comparison (Comparative)",
+                question: "Traveling by high-speed train is much ______ than traveling by regular bus.",
+                options: [
+                    "fast",
+                    "faster",
+                    "fastest",
+                    "more fast"
+                ],
+                answer: 1,
+                explanation: "Perbandingan dua hal dengan kata 'than' menggunakan bentuk Comparative ('faster')."
+            },
+            {
+                id: 35,
+                topic: "Reflexive Pronouns",
+                question: "Little Aisyah is very independent. She can tie her shoelaces all by ______.",
+                options: [
+                    "himself",
+                    "herself",
+                    "themselves",
+                    "ourselves"
+                ],
+                answer: 1,
+                explanation: "Subjek 'She' (Aisyah) menggunakan kata ganti refleksif 'herself' (oleh dirinya sendiri)."
+            },
+            {
+                id: 36,
+                topic: "Conditional Sentence Type 1",
+                question: "If it ______ tomorrow afternoon, we will cancel our outdoor football match.",
+                options: [
+                    "rain",
+                    "rains",
+                    "rained",
+                    "will rain"
+                ],
+                answer: 1,
+                explanation: "Conditional Type 1 berpola: If + Simple Present ('it rains'), Subject + will + V1."
+            },
+            {
+                id: 37,
+                topic: "Quantifiers (Countable vs Uncountable)",
+                question: "We don't have ______ sugar left in the jar. Could you buy a kilogram at the store?",
+                options: [
+                    "many",
+                    "much",
+                    "a few",
+                    "several"
+                ],
+                answer: 1,
+                explanation: "'Sugar' (gula) adalah kata benda yang tidak dapat dihitung (Uncountable Noun), sehingga dalam kalimat negatif digunakan 'much'."
+            },
+            {
+                id: 38,
+                topic: "Question Tags",
+                question: "You have already submitted your English homework, ______?",
+                options: [
+                    "have you",
+                    "haven't you",
+                    "didn't you",
+                    "aren't you"
+                ],
+                answer: 1,
+                explanation: "Kalimat utama positif menggunakan auxiliary 'have' ('You have already submitted...'), maka Question Tag-nya berbentuk negatif: 'haven't you?'."
+            },
+            {
+                id: 39,
+                topic: "Advertisement / Announcement",
+                passageTitle: "Read the School Announcement",
+                passage: "ANNOUNCEMENT\nTo all Grade 9 students,\nPlease be informed that the English Speech Audition will be held on Friday, November 20, 2026, at 1:30 p.m. in the Multimedia Room. Participants must prepare a 3-minute speech with the theme 'Digital Literacy for Teenagers'. Register your name with Ms. Diana before Wednesday.",
+                question: "Where will the English Speech Audition take place?",
+                options: [
+                    "In the school library",
+                    "In the Multimedia Room",
+                    "In the Grade 9 classroom",
+                    "In the school yard"
+                ],
+                answer: 1,
+                explanation: "Disebutkan dengan jelas di pengumuman: '...will be held on Friday, November 20, 2026, at 1:30 p.m. in the Multimedia Room.'"
+            },
+            {
+                id: 40,
+                topic: "Song Lyrics / Figurative Meaning",
+                passageTitle: "Read the Song Lyric Excerpt",
+                passage: "'When the rain is blowing in your face,\nAnd the whole world is on your case,\nI could offer you a warm embrace,\nTo make you feel my love.'",
+                question: "What is the main theme of the song lyrics above?",
+                options: [
+                    "Complaining about bad weather during winter",
+                    "Offering unconditional care, comfort, and support to someone in hard times",
+                    "Traveling around the world alone",
+                    "Forgetting old friends after moving away"
+                ],
+                answer: 1,
+                explanation: "Lirik tersebut menggambarkan kesetiaan dan dukungan tulus ('offer you a warm embrace') untuk menghibur seseorang yang sedang menghadapi masa sulit."
+            }
+        ];
+
+        // =========================================================================
+        // 2. DIALOG LUCU ASISTEN AMBAMUT (BENAR vs SALAH)
+        // =========================================================================
+        const laughDialogues = [
+            "HAHAHA! JENIUS BANGET! Ambamut sampai joget-joget nih! 💃🎉",
+            "YEAYYY! Benar lagi! Poin +2.5 masuk kantong! Lanjutkan! 😆🕺",
+            "WKWKWK! Gampang banget ya buat kamu? Ambamut bangga! ⭐🥳",
+            "MANTAP JIWA! Jawabanmu tepat sasaran! Joget dulu ah~ 🎶😄",
+            "KEREN POL! Calon juara Bahasa Inggris Kelas 9 nih! 🏆✨"
+        ];
+
+        const cryDialogues = [
+            "HUWAAA! 😭 Salah... Ambamut sedih sampai guling-guling di lantai! 💦",
+            "TIDAAAK! 😭💦 Jawabanmu kurang tepat! Yuk baca pembahasannya biar paham!",
+            "OEEEK! 😭 Ambamut mewek nih! Jangan menyerah, coba lebih teliti di soal berikutnya!",
+            "HUHUHU! 😭 Guling-guling dulu ah... Ayo balas di soal selanjutnya ya!"
+        ];
+
+        // =========================================================================
+        // 3. EFEK SUARA KARTUN (WEB AUDIO API - TANPA FILE EKSTERNAL)
+        // =========================================================================
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playCartoonSFX(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'laugh') {
+                    // Efek suara tawa riang + melodi joget naik (C5 - E5 - G5 - C6)
+                    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+                    notes.forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.09);
+                        gain.gain.setValueAtTime(0.18, now + i * 0.09);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.12);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.09);
+                        osc.stop(now + i * 0.09 + 0.13);
+                    });
+                } else if (type === 'cry') {
+                    // Efek suara tangisan kartun turun meluncur ("Huwuuu~")
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(480, now);
+                    osc.frequency.linearRampToValueAtTime(360, now + 0.25);
+                    osc.frequency.linearRampToValueAtTime(410, now + 0.4);
+                    osc.frequency.exponentialRampToValueAtTime(160, now + 0.85);
+
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.92);
+                } else if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.07);
+                }
+            } catch (e) {
+                // Abaikan jika browser membatasi audio
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                playCartoonSFX('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+            }
+        }
+
+        // =========================================================================
+        // 4. KONTROL EKSPRESI MASKOT AMBAMUT (IDLE / DANCE / CRY)
+        // =========================================================================
+        function setAmbamutState(state, customDialogue = null) {
+            const stage = document.getElementById('ambamut-stage');
+            const eyesIdle = document.getElementById('eyes-idle');
+            const eyesLaugh = document.getElementById('eyes-laugh');
+            const eyesCry = document.getElementById('eyes-cry');
+
+            const mouthIdle = document.getElementById('mouth-idle');
+            const mouthLaugh = document.getElementById('mouth-laugh');
+            const mouthCry = document.getElementById('mouth-cry');
+
+            const sfxLaugh = document.getElementById('sfx-text-laugh');
+            const sfxCry = document.getElementById('sfx-text-cry');
+            const bubble = document.getElementById('speech-bubble');
+            const dialogueEl = document.getElementById('ambamut-dialogue');
+
+            // Reset semua kelas state
+            stage.classList.remove('state-idle', 'state-dance', 'state-cry');
+            eyesIdle.classList.add('hidden');
+            eyesLaugh.classList.add('hidden');
+            eyesCry.classList.add('hidden');
+            mouthIdle.classList.add('hidden');
+            mouthLaugh.classList.add('hidden');
+            mouthCry.classList.add('hidden');
+            sfxLaugh.classList.add('hidden');
+            sfxCry.classList.add('hidden');
+
+            if (state === 'dance') {
+                stage.classList.add('state-dance');
+                eyesLaugh.classList.remove('hidden');
+                mouthLaugh.classList.remove('hidden');
+                sfxLaugh.classList.remove('hidden');
+                bubble.className = "relative z-10 w-full bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3.5 mb-2 text-center shadow-sm transition-all";
+                const text = customDialogue || laughDialogues[Math.floor(Math.random() * laughDialogues.length)];
+                dialogueEl.textContent = `"${text}"`;
+            } else if (state === 'cry') {
+                stage.classList.add('state-cry');
+                eyesCry.classList.remove('hidden');
+                mouthCry.classList.remove('hidden');
+                sfxCry.classList.remove('hidden');
+                bubble.className = "relative z-10 w-full bg-rose-50 border-2 border-rose-300 rounded-2xl p-3.5 mb-2 text-center shadow-sm transition-all";
+                const text = customDialogue || cryDialogues[Math.floor(Math.random() * cryDialogues.length)];
+                dialogueEl.textContent = `"${text}"`;
+            } else {
+                stage.classList.add('state-idle');
+                eyesIdle.classList.remove('hidden');
+                mouthIdle.classList.remove('hidden');
+                bubble.className = "relative z-10 w-full bg-sky-50 border-2 border-sky-200 rounded-2xl p-3.5 mb-2 text-center shadow-sm transition-all";
+                dialogueEl.textContent = customDialogue || `"Ayo pilih jawaban yang paling tepat! Ambamut siap joget kalau kamu benar! 😎"`;
+            }
+        }
+
+        function previewReaction(type) {
+            if (type === 'dance') {
+                playCartoonSFX('laugh');
+                setAmbamutState('dance', "HAHAHA! Ini contoh joget kemenangan Ambamut! Jawab yang benar ya! 🕺✨");
+            } else {
+                playCartoonSFX('cry');
+                setAmbamutState('cry', "HUWAAA! 😭 Jangan sampai salah biar Ambamut nggak guling-guling kayak gini!");
+            }
+        }
+
+        // =========================================================================
+        // 5. STATE & LOGIKA PERMAINAN KUIS (40 SOAL -> SKOR 100)
+        // =========================================================================
+        let currentIndex = 0;
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+        let studentName = "";
+        let studentClass = "";
+        let secondsElapsed = 0;
+        let timerInterval = null;
+
+        function startGame(e) {
+            e.preventDefault();
+            studentName = document.getElementById('student-name').value.trim();
+            studentClass = document.getElementById('student-class').value.trim();
+            if (!studentName || !studentClass) return;
+
+            playCartoonSFX('laugh');
+
+            currentIndex = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            secondsElapsed = 0;
+
+            document.getElementById('display-name').textContent = studentName;
+            document.getElementById('display-class').textContent = `Kelas ${studentClass}`;
+            const initials = studentName.split(' ').map(s => s[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('avatar-initials').textContent = initials || 'S9';
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            startTimer();
+            renderQuestionGrid();
+            renderQuestion();
+            updateScoreAndProgress();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerUI();
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                updateTimerUI();
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            const s = (secondsElapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').textContent = `${m}:${s}`;
+        }
+
+        function renderQuestion() {
+            const q = quizQuestions[currentIndex];
+            const ans = userAnswers[currentIndex];
+
+            document.getElementById('current-q-num').textContent = currentIndex + 1;
+            document.getElementById('question-topic').textContent = q.topic;
+
+            // Tampilkan / Sembunyikan Kotak Bacaan
+            const passageBox = document.getElementById('passage-box');
+            if (q.passage) {
+                passageBox.classList.remove('hidden');
+                document.getElementById('passage-title').textContent = q.passageTitle || "Read the text carefully!";
+                document.getElementById('passage-content').textContent = q.passage;
+            } else {
+                passageBox.classList.add('hidden');
+            }
+
+            document.getElementById('question-text').textContent = q.question;
+
+            // Render 4 Opsi (A, B, C, D)
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => handleAnswer(idx);
+
+                let btnClass = "option-btn w-full text-left p-4 rounded-2xl border-2 flex items-center gap-3.5 ";
+                let badgeClass = "w-9 h-9 rounded-xl flex items-center justify-center font-cartoon font-bold text-base shrink-0 ";
+
+                if (ans !== null) {
+                    btn.disabled = true;
+                    if (idx === q.answer) {
+                        btnClass += "bg-emerald-50 border-emerald-500 text-emerald-950 font-bold shadow-xs";
+                        badgeClass += "bg-emerald-500 text-white";
+                    } else if (idx === ans && ans !== q.answer) {
+                        btnClass += "bg-rose-50 border-rose-500 text-rose-950 font-semibold";
+                        badgeClass += "bg-rose-500 text-white";
+                    } else {
+                        btnClass += "bg-slate-50 border-slate-100 text-slate-400 opacity-75";
+                        badgeClass += "bg-slate-200 text-slate-500";
+                    }
+                } else {
+                    btnClass += "bg-white hover:bg-amber-50/60 border-slate-200 hover:border-amber-400 text-slate-800 cursor-pointer";
+                    badgeClass += "bg-amber-100 text-amber-900";
+                }
+
+                btn.className = btnClass;
+                btn.innerHTML = `
+                    <span class="${badgeClass}">${letters[idx]}</span>
+                    <span class="text-sm sm:text-base flex-1 leading-snug">${opt}</span>
+                    ${(ans !== null && idx === q.answer) ? '<i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>' : ''}
+                    ${(ans !== null && idx === ans && ans !== q.answer) ? '<i class="fa-solid fa-circle-xmark text-rose-600 text-xl"></i>' : ''}
+                `;
+                container.appendChild(btn);
+            });
+
+            // Atur Kotak Pembahasan & Reaksi Ambamut
+            const expBox = document.getElementById('explanation-box');
+            if (ans !== null) {
+                expBox.classList.remove('hidden');
+                const isCorrect = ans === q.answer;
+                if (isCorrect) {
+                    expBox.className = "mt-6 p-4 rounded-2xl border-2 bg-emerald-50/90 border-emerald-300 text-sm animate-slide-up";
+                    document.getElementById('exp-icon').innerHTML = '<i class="fa-solid fa-face-laugh-beam text-emerald-600"></i>';
+                    document.getElementById('exp-title').className = "font-extrabold mb-1 text-emerald-900";
+                    document.getElementById('exp-title').textContent = "Tepat Sekali! (+2.5 Poin)";
+                    setAmbamutState('dance');
+                } else {
+                    expBox.className = "mt-6 p-4 rounded-2xl border-2 bg-rose-50/90 border-rose-300 text-sm animate-slide-up";
+                    document.getElementById('exp-icon').innerHTML = '<i class="fa-solid fa-face-sad-cry text-rose-600"></i>';
+                    document.getElementById('exp-title').className = "font-extrabold mb-1 text-rose-900";
+                    document.getElementById('exp-title').textContent = `Ups, Kurang Tepat! Jawaban Benar: ${letters[q.answer]}`;
+                    setAmbamutState('cry');
+                }
+                document.getElementById('exp-text').textContent = q.explanation;
+            } else {
+                expBox.classList.add('hidden');
+                setAmbamutState('idle', `Soal nomor ${currentIndex + 1} nih! Baca baik-baik ya, Ambamut siap joget kalau benar! 🤔✨`);
+            }
+
+            // Navigasi Tombol
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            if (currentIndex === quizQuestions.length - 1) {
+                document.getElementById('next-btn').classList.add('hidden');
+                document.getElementById('finish-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('next-btn').classList.remove('hidden');
+                document.getElementById('finish-btn').classList.add('hidden');
+            }
+
+            updateScoreAndProgress();
+            renderQuestionGrid();
+        }
+
+        function handleAnswer(selectedIndex) {
+            if (userAnswers[currentIndex] !== null) return;
+
+            userAnswers[currentIndex] = selectedIndex;
+            const isCorrect = selectedIndex === quizQuestions[currentIndex].answer;
+
+            if (isCorrect) {
+                playCartoonSFX('laugh');
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 35, spread: 55, origin: { x: 0.25, y: 0.6 } });
+                }
+            } else {
+                playCartoonSFX('cry');
+            }
+
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                playCartoonSFX('click');
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < quizQuestions.length - 1) {
+                playCartoonSFX('click');
+                currentIndex++;
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            playCartoonSFX('click');
+            currentIndex = idx;
+            toggleDrawer();
+            renderQuestion();
+        }
+
+        function updateScoreAndProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            let correct = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans !== null && ans === quizQuestions[idx].answer) correct++;
+            });
+
+            // 40 soal * 2.5 = 100
+            const score = correct * 2.5;
+            document.getElementById('live-score').textContent = Number.isInteger(score) ? score : score.toFixed(1);
+            document.getElementById('answered-count').textContent = answered;
+
+            const pct = Math.round(((currentIndex + 1) / quizQuestions.length) * 100);
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('progress-percent-text').textContent = `${pct}%`;
+        }
+
+        function renderQuestionGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = idx + 1;
+                btn.onclick = () => jumpToQuestion(idx);
+
+                const ans = userAnswers[idx];
+                let cls = "h-10 rounded-xl font-cartoon font-bold text-sm transition-all cursor-pointer border-2 ";
+
+                if (idx === currentIndex) {
+                    cls += "ring-2 ring-amber-400 border-slate-900 ";
+                } else {
+                    cls += "border-transparent ";
+                }
+
+                if (ans === null) {
+                    cls += "bg-slate-100 hover:bg-slate-200 text-slate-700";
+                } else if (ans === q.answer) {
+                    cls += "bg-emerald-500 text-white";
+                } else {
+                    cls += "bg-rose-500 text-white";
+                }
+
+                btn.className = cls;
+                grid.appendChild(btn);
+            });
+        }
+
+        function toggleDrawer() {
+            playCartoonSFX('click');
+            const drawer = document.getElementById('nav-drawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                renderQuestionGrid();
+            }
+        }
+
+        // =========================================================================
+        // 6. SELESAI KUIS & HITUNG SKOR AKHIR (MAKSIMAL 100)
+        // =========================================================================
+        function openConfirmModal() {
+            playCartoonSFX('click');
+            const answered = userAnswers.filter(a => a !== null).length;
+            const remaining = quizQuestions.length - answered;
+            const textEl = document.getElementById('confirm-text');
+
+            if (remaining > 0) {
+                textEl.innerHTML = `Kamu sudah menjawab <strong>${answered} dari 40</strong> soal (masih ada <span class="text-rose-600 font-bold">${remaining} soal belum dijawab</span>). Yakin ingin mengakhiri kuis sekarang?`;
+            } else {
+                textEl.innerHTML = `Keren! Semua <strong>40 soal</strong> sudah dijawab. Klik <strong>Ya, Selesai!</strong> untuk melihat rapor skor akhirmu.`;
+            }
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            playCartoonSFX('click');
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        function finishQuiz() {
+            closeConfirmModal();
+            clearInterval(timerInterval);
+
+            let correct = 0;
+            let wrong = 0;
+            let empty = 0;
+
+            quizQuestions.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                if (ans === null) empty++;
+                else if (ans === q.answer) correct++;
+                else wrong++;
+            });
+
+            // Skor maksimal = 40 * 2.5 = 100
+            const rawScore = correct * 2.5;
+            const finalScoreStr = Number.isInteger(rawScore) ? rawScore : rawScore.toFixed(1);
+
+            const m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            const s = (secondsElapsed % 60).toString().padStart(2, '0');
+
+            document.getElementById('result-name').textContent = studentName;
+            document.getElementById('result-meta').textContent = `Kelas ${studentClass} • Waktu Pengerjaan: ${m}:${s}`;
+            document.getElementById('final-score').textContent = finalScoreStr;
+
+            document.getElementById('res-correct').textContent = correct;
+            document.getElementById('res-wrong').textContent = wrong;
+            document.getElementById('res-empty').textContent = empty;
+
+            const predEl = document.getElementById('final-predicate');
+            const quoteEl = document.getElementById('final-ambamut-quote');
+
+            if (rawScore === 100) {
+                playCartoonSFX('laugh');
+                predEl.textContent = "Predikat: A+ (SEMPURNA 100!) 🏆";
+                predEl.className = "font-cartoon text-xl font-bold text-emerald-600 mb-1";
+                quoteEl.textContent = `"HAHAHA! YEAY! Ambamut joget nonstop sampai kayang! Kamu menjawab semua 40 soal Bahasa Inggris Kelas 9 dengan BENAR SEMUA!"`;
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                }
+            } else if (rawScore >= 80) {
+                playCartoonSFX('laugh');
+                predEl.textContent = "Predikat: A (Sangat Hebat!) 🌟";
+                predEl.className = "font-cartoon text-xl font-bold text-sky-700 mb-1";
+                quoteEl.textContent = `"WKWKWK! Ambamut ikut menari gembira! Nilaimu tinggi banget, tinggal sedikit lagi menuju 100!"`;
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                }
+            } else if (rawScore >= 65) {
+                playCartoonSFX('click');
+                predEl.textContent = "Predikat: B (Cukup Baik!) 👍";
+                predEl.className = "font-cartoon text-xl font-bold text-amber-600 mb-1";
+                quoteEl.textContent = `"Lumayan bagus! Cek pembahasan soal yang salah di bawah biar Ambamut bisa joget lebih lama di percobaan berikutnya!"`;
+            } else {
+                playCartoonSFX('cry');
+                predEl.textContent = "Predikat: C (Ayo Berlatih Lagi!) 💪";
+                predEl.className = "font-cartoon text-xl font-bold text-rose-600 mb-1";
+                quoteEl.textContent = `"HUWAAA! 😭 Ambamut masih guling-guling nih! Jangan sedih, pelajari pembahasannya di bawah lalu main lagi ya!"`;
+            }
+
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            renderReview('all');
+        }
+
+        function renderReview(filter) {
+            ['all', 'wrong', 'correct'].forEach(f => {
+                const b = document.getElementById(`rev-${f}`);
+                b.className = (f === filter)
+                    ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-slate-900 cursor-pointer"
+                    : "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 cursor-pointer";
+            });
+
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            quizQuestions.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                const isCorrect = ans === q.answer;
+
+                if (filter === 'correct' && !isCorrect) return;
+                if (filter === 'wrong' && isCorrect) return;
+
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-2xl border-2 ${isCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-rose-200 bg-rose-50/20'}`;
+
+                const badge = isCorrect
+                    ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold">Benar (+2.5)</span>`
+                    : `<span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 text-xs font-bold">${ans === null ? 'Kosong (0)' : 'Salah (0)'}</span>`;
+
+                const optsHtml = q.options.map((opt, oIdx) => {
+                    let style = "p-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 ";
+                    if (oIdx === q.answer) style += "bg-emerald-100 text-emerald-950 font-bold border border-emerald-300";
+                    else if (oIdx === ans && !isCorrect) style += "bg-rose-100 text-rose-950 font-semibold border border-rose-300 line-through";
+                    else style += "text-slate-600";
+
+                    return `<div class="${style}"><span class="font-cartoon font-bold">${letters[oIdx]}.</span><span>${opt}</span></div>`;
+                }).join('');
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="font-cartoon font-bold text-amber-700 text-sm">Soal #${idx + 1} • ${q.topic}</span>
+                        ${badge}
+                    </div>
+                    <p class="font-bold text-slate-900 text-sm sm:text-base mb-3">${q.question}</p>
+                    <div class="space-y-1.5 mb-3">${optsHtml}</div>
+                    <div class="p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs sm:text-sm text-slate-700">
+                        <strong class="text-sky-900">💡 Pembahasan Ambamut:</strong> ${q.explanation}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            if (list.innerHTML === '') {
+                list.innerHTML = `<div class="text-center py-6 text-sm text-slate-500 font-semibold">Tidak ada soal dalam kategori ini.</div>`;
+            }
+        }
+
+        function restartQuiz() {
+            playCartoonSFX('click');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
